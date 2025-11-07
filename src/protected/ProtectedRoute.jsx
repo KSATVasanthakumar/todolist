@@ -6,7 +6,7 @@ import { useTheme } from "../context/ThemeContext";
 const ProtectedRoute = () => {
 	const { isloggedin, loading } = useAuth();
 
-	const { darkMode, toggle, setThemeMode } = useTheme();
+	const { darkMode } = useTheme();
 
 	// 🕐 Wait until token check finishes
 	if (loading) {
