@@ -1,21 +1,22 @@
-import React, { useRef, useState } from "react";
+import React, { Suspense, lazy, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+const RolesList = lazy(() => import("../components/RolesList"));
 
 const Details = () => {
 	const [counter, setCounter] = useState(0);
 	const navigate = useNavigate();
 
-	const handleIncrement = () => {
-		setCounter(counter + 1);
-	};
-
 	return (
 		<>
 			<div>Details</div>
-			The Count is {counter + 1}
-			<button onClick={handleIncrement} className='bg-red-600 text-white px-3 '>
-				Increment
-			</button>
+			<Suspense
+				fallback={
+					<div className='text-center text-gray-400 py-4'>Loading roles...</div>
+				}
+			>
+				<RolesList />
+			</Suspense>
 		</>
 	);
 };

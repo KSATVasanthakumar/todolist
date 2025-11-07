@@ -9,24 +9,27 @@ import Details from "../screens/Details";
 import Login from "../screens/Login";
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
+import { ThemeProvider } from "../context/ThemeContext";
 
 const RootRoute = () => {
 	const { isloggedin } = useAuth();
 	return (
 		<>
-			{isloggedin && <Header />}
-			<Routes>
-				<Route element={<ProtectedRoute />}>
-					<Route path='/' element={<Home />} />
-					<Route path='features' element={<Features />} />
-					<Route path='tasks' element={<Task />} />
-					<Route path='details' element={<Details />} />
-				</Route>
+			<ThemeProvider>
+				{isloggedin && <Header />}
+				<Routes>
+					<Route element={<ProtectedRoute />}>
+						<Route path='/' element={<Home />} />
+						<Route path='features' element={<Features />} />
+						<Route path='tasks' element={<Task />} />
+						<Route path='details' element={<Details />} />
+					</Route>
 
-				<Route element={<PublicRoute />}>
-					<Route path='login' element={<Login />} />
-				</Route>
-			</Routes>
+					<Route element={<PublicRoute />}>
+						<Route path='login' element={<Login />} />
+					</Route>
+				</Routes>
+			</ThemeProvider>
 		</>
 	);
 };

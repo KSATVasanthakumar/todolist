@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
@@ -7,15 +7,11 @@ const Home = () => {
 	const navigate = useNavigate();
 	const { authToken } = useAuth();
 	const [roles, setRoles] = useState([]);
-	const fetched = useRef(false);
+	
 	useEffect(() => {
-		if (fetched.current) return;
-		fetched.current = true;
-
 		const getRoles = async () => {
-			const response = await axios.get("https://api.restful-api.dev/objects");
+			const response = await axios.get("https://localhost:7254/api/role/get");
 			setRoles(response.data);
-			console.log(response.data);
 		};
 		getRoles();
 	}, []);
@@ -24,6 +20,11 @@ const Home = () => {
 		<>
 			<div>Home</div>
 			Welcome, {authToken?.username ? authToken.username : "Guest"} 👋
+			<div>
+				{roles.map((item) => {
+					return <li key={item.id}>{item.name}</li>;
+				})}
+			</div>
 			<button onClick={() => navigate("details")}>Details</button>
 		</>
 	);

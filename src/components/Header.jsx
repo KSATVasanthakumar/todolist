@@ -9,9 +9,14 @@ import {
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { GrSettingsOption } from "react-icons/gr";
+import { useTheme } from "../context/ThemeContext";
+import { CiDark, CiLight } from "react-icons/ci";
 const Header = () => {
 	const navigate = useNavigate();
 	const { SetLoggedIn, setAuthToken, authToken } = useAuth();
+
+	const { toggle, darkMode } = useTheme();
+
 	let username = authToken.username;
 
 	const handleLogout = () => {
@@ -74,6 +79,7 @@ const Header = () => {
 					</NavLink>
 				</nav>
 			</div>
+
 			<div className='flex gap-2 px-5'>
 				<div className='dropdown dropdown-end'>
 					<div
@@ -109,6 +115,15 @@ const Header = () => {
 						</li>
 					</ul>
 				</div>
+			</div>
+			<div>
+				<button onClick={toggle}>
+					{darkMode ? (
+						<CiDark className='text-2xl text-black/50' />
+					) : (
+						<CiLight className='text-2xl text-amber-600' />
+					)}
+				</button>
 			</div>
 		</div>
 	);
