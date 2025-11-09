@@ -2,27 +2,25 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-
+import { useForm } from "react-hook-form";
+let counter = 0;
 const Login = () => {
-	const [formlogin, setFormLogin] = useState({ Username: "", Password: "" });
-
+	const form = useForm();
+	const {
+		register,
+		handleSubmit,
+		formState: { isSubmitting },
+	} = form;
+	counter++;
 	const [errormessage, setErrorMessage] = useState("");
 	const [loading, setLoading] = useState(false);
 	const { SetLoggedIn, setAuthToken } = useAuth();
 	const navigate = useNavigate();
-	const textFocus = useRef();
 
-	const handleChange = (e) => {
-		const { name, value } = e.target;
-		setFormLogin({ ...formlogin, [name]: value });
-	};
 	const handleToastMessage = (message) => {
 		setErrorMessage(message);
 	};
 
-	useEffect(() => {
-		textFocus.current.focus();
-	}, []);
 	useEffect(() => {
 		if (errormessage) {
 			const timer = setTimeout(() => {
@@ -32,32 +30,26 @@ const Login = () => {
 		}
 	}, [errormessage]);
 
-	const handleLogin = async () => {
-		try {
-			setLoading(true);
-			if (!formlogin?.Username || !formlogin?.Password) {
-				setLoading(false);
-				handleToastMessage("Username or Password required");
-				return;
-			}
-
-			const accessLogin = await axios.post(
-				"https://localhost:7254/api/auth/login",
-				{
-					Username: formlogin.Username,
-					Password: formlogin.Password,
-				}
-			);
-			const token = accessLogin.data;
-			SetLoggedIn(true);
-			setAuthToken(token);
-			localStorage.setItem("setToken", JSON.stringify(token));
+	const submitHandler = async (data) => {
+		setLoading(true);
+		if (!data?.Username || !data?.Password) {
 			setLoading(false);
-			navigate("/");
-			// console.log("Login success:", accessLogin.data.accessToken);
-		} catch (error) {
-			console.error(error);
+			handleToastMessage("Username or Password required");
+			return;
 		}
+		const accessLogin = await axios.post(
+			"https://localhost:7254/api/auth/login",
+			{
+				Username: data.Username,
+				Password: data.Password,
+			}
+		);
+		const token = accessLogin.data;
+		setAuthToken(token);
+		SetLoggedIn(true);
+		localStorage.setItem("setToken", JSON.stringify(token));
+		setLoading(false);
+		navigate("/");
 	};
 
 	return (
@@ -72,36 +64,45 @@ const Login = () => {
 				</>
 			)}
 			<div className='flex flex-col justify-center items-center min-h-screen bg-slate-900 text-white'>
-				<div className='flex bg-white w-2/12 justify-center items-center rounded-t-md py-2 border-t-2 border-amber-200 '>
-					<span className='text-slate-900'> Welcome to Login </span>
+				{/* Header Section */}
+				<div className='flex bg-white w-2/12 justify-center items-center rounded-t-md py-2 border-t-2 border-amber-200'>
+					<span className='text-slate-900 font-medium'>
+						Welcome to Login [{counter}]
+					</span>
 				</div>
-				<div className='flex flex-col px-2.5 bg-white w-3/12 rounded-md  shadow-md shadow-white  '>
+
+				{/* Login Form */}
+				<form
+					noValidate
+					onSubmit={handleSubmit(submitHandler)}
+					className='flex flex-col bg-white w-1/3 p-6 rounded-b-md shadow-xl text-slate-900'
+				>
+					<h2 className='text-2xl font-semibold text-center mb-6'>Login</h2>
+
 					<input
-						className='py-3 px-3  mt-3 text-black  border-amber-100  border-2 rounded text-sm'
+						className='py-3 px-3 mb-3 text-black border border-amber-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-amber-400'
 						type='text'
-						ref={textFocus}
 						placeholder='Username'
-						name='Username'
-						onChange={handleChange}
-						value={formlogin?.Username}
+						disabled={isSubmitting}
+						{...register("Username")}
 					/>
 
 					<input
-						className='py-3 px-3  mt-3 text-black border-amber-100 border-2 rounded text-sm'
+						className='py-3 px-3 mb-5 text-black border border-amber-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-amber-400'
 						type='password'
 						placeholder='Password'
-						name='Password'
-						onChange={handleChange}
-						value={formlogin?.Password}
+						disabled={isSubmitting}
+						{...register("Password")}
 					/>
+
 					<button
-						className='bg-amber-500 py-2 mb-4 mt-4 rounded-md hover:bg-amber-700 hover:cursor-pointer'
-						onClick={handleLogin}
-						disabled={loading}
+						className='bg-amber-500 text-white py-2 rounded-md hover:bg-amber-600 transition-colors disabled:opacity-70'
+						type='submit'
+						disabled={isSubmitting}
 					>
-						{loading ? "Logging In........." : "Login"}
+						{isSubmitting ? "Logging In..." : "Login"}
 					</button>
-				</div>
+				</form>
 			</div>
 		</>
 	);

@@ -1,11 +1,14 @@
 import React, { Suspense, lazy, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useDebounce from "../hooks/useDebounce";
 
 const RolesList = lazy(() => import("../components/RolesList"));
 
 const Details = () => {
 	const [counter, setCounter] = useState(0);
 	const navigate = useNavigate();
+	const [searchtext, setsearchtext] = useState("");
+	const debouncequery = useDebounce(searchtext);
 
 	return (
 		<>
