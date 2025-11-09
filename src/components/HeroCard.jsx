@@ -1,9 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
+
+import { animate, motion, useMotionValue, useTransform } from "motion/react";
 
 const HeroCard = () => {
+	const rolecount = useMotionValue(0);
+	const rounded = useTransform(() => Math.round(rolecount.get()));
+
+	useEffect(() => {
+		const rolecontrols = animate(rolecount, 75, { duration: 5 });
+		return () => rolecontrols.stop();
+	}, []);
 	return (
 		<>
-			<div className='flex flex-row justify-around mt-[-60px]'>
+			<motion.div
+				className='flex flex-row justify-around mt-[-60px]'
+				initial={{ scale: 0 }}
+				animate={{ scale: 1 }}
+			>
 				<div className='card w-96 bg-base-100 shadow-md hover:shadow-lg transition-shadow'>
 					<div className='card-body'>
 						<h2 className='card-title text-lg font-semibold text-amber-700'>
@@ -15,10 +28,10 @@ const HeroCard = () => {
 						</p>
 
 						<div className='mt-4 space-y-1 text-sm'>
-							<p>
-								<span className='font-medium text-gray-700'>Total Roles:</span>{" "}
-								12
-							</p>
+							<div className='flex  flex-row'>
+								<span className='font-medium text-gray-700'>Total Roles:</span>
+								<motion.pre>{rounded}</motion.pre>
+							</div>
 							<p>
 								<span className='font-medium text-gray-700'>Last Added:</span>{" "}
 								Admin
@@ -44,20 +57,24 @@ const HeroCard = () => {
 						</p>
 
 						<div className='mt-4 space-y-1 text-sm'>
-							<p>
-								<span className='font-medium text-gray-700'>Total Users:</span>{" "}
-								58
-							</p>
-							<p>
-								<span className='font-medium text-gray-700'>Active Users:</span>{" "}
-								47
-							</p>
-							<p>
+							<div className='flex  flex-row'>
+								<span className='font-medium text-gray-700'>
+									Total Users :{"    "}
+								</span>
+								<motion.pre>{rounded}</motion.pre>
+							</div>
+							<div className='flex  flex-row'>
+								<span className='font-medium text-gray-700'>
+									Active Users:{" "}
+								</span>{" "}
+								<motion.pre>{rounded}</motion.pre>
+							</div>
+							<div className='flex  flex-row'>
 								<span className='font-medium text-gray-700'>
 									Pending Invitations:
 								</span>{" "}
-								3
-							</p>
+								<motion.pre>{rounded}</motion.pre>
+							</div>
 						</div>
 
 						<div className='card-actions justify-end mt-4'>
@@ -79,16 +96,18 @@ const HeroCard = () => {
 						</p>
 
 						<div className='mt-4 space-y-1 text-sm'>
-							<p>
-								<span className='font-medium text-gray-700'>Total Tasks:</span>{" "}
-								124
-							</p>
-							<p>
-								<span className='font-medium text-gray-700'>Completed:</span> 87
-							</p>
-							<p>
-								<span className='font-medium text-gray-700'>Pending:</span> 37
-							</p>
+							<div className='flex  flex-row'>
+								<span className='font-medium text-gray-700'>Total Tasks: </span>{" "}
+								<motion.pre>{rounded}</motion.pre>
+							</div>
+							<div className='flex  flex-row'>
+								<span className='font-medium text-gray-700'>Completed: </span>{" "}
+								<motion.pre>{rounded}</motion.pre>
+							</div>
+							<div className='flex  flex-row'>
+								<span className='font-medium text-gray-700'>Pending: </span>{" "}
+								<motion.pre>{rounded}</motion.pre>
+							</div>
 						</div>
 
 						<div className='card-actions justify-end mt-4'>
@@ -98,7 +117,7 @@ const HeroCard = () => {
 						</div>
 					</div>
 				</div>
-			</div>
+			</motion.div>
 		</>
 	);
 };
